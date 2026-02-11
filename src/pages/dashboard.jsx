@@ -26,10 +26,8 @@ export default function Dashboard({ handleQuizStart, quizState }) {
   const onStart = () => {
     if (typeof handleQuizStart === "function") {
       handleQuizStart();
-    } else if (quizState) {
-      navigate("/kuis", { state: { resume: true } });
     } else {
-      navigate("/kuis", { state: { start: true } });
+      navigate("/kuis", { state: { checkResume: true } });
     }
   };
 

@@ -67,6 +67,7 @@ export default function Kuis() {
   }, [isQuizStarted, timeLeft, isQuizFinished]);
 
   const startQuiz = async () => {
+    localStorage.removeItem("quizState"); // Hapus state quiz lama jika ada
     const url = `https://opentdb.com/api.php?amount=10&token=${token}&encode=base64`;
 
     try {
@@ -136,6 +137,10 @@ export default function Kuis() {
     localStorage.removeItem("quizState");
   };
 
+  const getAnsweredCount = () => {
+    return userAnswers.filter((answer) => answer !== null).length;
+  };
+
   // Format waktu (MM:SS)
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
@@ -190,8 +195,11 @@ export default function Kuis() {
         <div className="text-6xl font-bold text-blue-600 mb-4">
           {score}/{questions.length}
         </div>
-        <p className="text-xl text-gray-600 mb-8">
+        <p className="text-xl text-gray-600 mb-2">
           Anda menjawab {score} soal dengan benar
+        </p>
+        <p className="text-xl text-gray-600 mb-8">
+          dari {getAnsweredCount()} soal yang dijawab
         </p>
         <Button onClick={() => window.location.reload()}>Coba Lagi</Button>
       </div>
@@ -209,7 +217,7 @@ export default function Kuis() {
         </div>
 
         {/* Tracker: Soal yang dikerjakan vs Total Soal */}
-        <div className="mb-4 text-sm font-semibold text-blue-600">
+        <div className="mb-4 text-sm font-semibold text-red-400">
           SOAL {currentIndex + 1} DARI {questions.length}
         </div>
 
@@ -217,13 +225,13 @@ export default function Kuis() {
           {currentQuestion.question}
         </h2>
 
-        <div className="grid grid-cols-1 gap-3 text-white w-full max-w-md">
+        <div className="grid grid-cols-1 gap-3 text-white w-full max-w-md hover:cursor-pointer">
           {currentQuestion.all_answers.map((ans, index) => (
             <Button
               key={index}
               variant="outline"
               onClick={() => handleAnswer(ans)}
-              className="py-6 text-lg"
+              className="py-6 text-lg hover:text-blue-600"
             >
               {ans}
             </Button>
